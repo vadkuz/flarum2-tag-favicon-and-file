@@ -18,6 +18,9 @@
   "extra": {
     "flarum-extension": {
       "title": "Tag Favicon Icons",
+      "links": {
+        "source": "https://github.com/vadkuz/flarum2-tag-favicon-and-file/tree/main"
+      },
       "icon": {
         "name": "fas fa-image",
         "backgroundColor": "#f59e0b",
