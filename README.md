@@ -12,7 +12,7 @@ Supports 3 icon sources:
 
 `vadkuz/flarum2-tag-favicon-and-file`
 
-## Русский
+## 🇷🇺 Русский
 
 ### Возможности
 
@@ -47,7 +47,7 @@ php flarum cache:clear
 php flarum assets:publish
 ```
 
-## English
+## 🇬🇧 English
 
 ### Features
 
