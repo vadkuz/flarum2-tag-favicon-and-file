@@ -70,9 +70,9 @@ php flarum assets:publish
 
 Open a tag in admin panel and fill one of these fields:
 
-- `Иконка` (Font Awesome class)
-- `Favicon (URL или домен)`
-- `Загрузить файл`
+- `Icon` (Font Awesome class)
+- `Favicon (URL or domain)`
+- `Upload icon file`
 
 ### Removal
 
