@@ -1,0 +1,25 @@
+{
+  "name": "vadkuz/flarum2-tag-favicon-and-file",
+  "description": "Adds favicon URL support for tag/category icons as an alternative to Font Awesome classes.",
+  "type": "flarum-extension",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Vadkuz\\TagFavicon\\": "src/"
+    }
+  },
+  "require": {
+    "flarum/core": "^2.0.0-beta.6",
+    "flarum/tags": "*"
+  },
+  "extra": {
+    "flarum-extension": {
+      "title": "Tag Favicon Icons",
+      "icon": {
+        "name": "fas fa-image",
+        "backgroundColor": "#f59e0b",
+        "color": "#ffffff"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+vadkuz-flarum2-tag-favicon-and-file:
+  admin:
+    edit_tag:
+      favicon_label: Favicon (URL or domain)
+      favicon_help: 'You can enter a direct image URL (.ico/.png/.svg/.webp/.jpg, etc.) or a website domain/URL (for example, whitebird.io or https://whitebird.io).'
+      favicon_placeholder: 'whitebird.io or https://example.com/favicon.png'
+      upload_label: Upload icon file
+      upload_help: 'Supported formats: .ico, .png, .svg, .jpg, .jpeg, .webp, .avif, .gif, .bmp (up to 2 MB). The file is uploaded to the server and icon size stays standard.'
+      uploading: Uploading file...
+      upload_error_default: Could not upload the file. Please check the format and try again.

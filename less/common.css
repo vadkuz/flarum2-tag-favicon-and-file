@@ -1,0 +1,21 @@
+/* Render tag icons as favicon images when icon value is set to `favicon:URL` or URL. */
+.tag-favicon-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-image: var(--tag-favicon-url);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  color: transparent !important;
+  vertical-align: -0.125em;
+}
+
+.tag-favicon-icon::before {
+  content: '' !important;
+}
+
+.TagLabel-icon.tag-favicon-icon,
+.Button-icon.tag-favicon-icon {
+  margin-right: 0.35em;
+}

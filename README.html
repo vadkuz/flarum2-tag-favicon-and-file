@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>flarum2-tag-favicon-and-file</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; margin: 32px; color: #111; }
+    h1, h2 { margin-top: 1.2em; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>flarum2-tag-favicon-and-file</h1>
+  <p>Расширение для иконок тегов/категорий в Flarum 2.x.</p>
+  <p>Поддерживает 3 варианта иконок: класс Font Awesome, favicon по URL/домену и загрузку собственного файла.</p>
+
+  <h2>Пакет Composer</h2>
+  <p><code>vadkuz/flarum2-tag-favicon-and-file</code></p>
+
+  <h2>Возможности</h2>
+  <ul>
+    <li>Автоопределение favicon по домену: <code>whitebird.io</code> или <code>https://whitebird.io</code>.</li>
+    <li>Поддержка URL изображений: <code>.ico .png .svg .jpg .jpeg .webp .avif .gif .bmp</code>.</li>
+    <li>Загрузка собственного файла иконки из админки.</li>
+    <li>Единый размер отображения иконки для всех вариантов.</li>
+    <li>Приоритет: загруженный файл -&gt; favicon URL/домен -&gt; Font Awesome.</li>
+  </ul>
+
+  <h2>Установка (локально через path repository)</h2>
+  <ol>
+    <li>Скопируйте папку расширения в <code>extensions/flarum2-tag-favicon-and-file</code>.</li>
+    <li>В корне Flarum выполните команду (она сама добавит path-репозиторий в <code>composer.json</code>):</li>
+  </ol>
+  <pre><code>composer config repositories.flarum2-tag-favicon-and-file '{"type":"path","url":"extensions/flarum2-tag-favicon-and-file","options":{"symlink":true}}'</code></pre>
+  <ol start="3">
+    <li>Установите пакет:</li>
+  </ol>
+  <pre><code>composer require vadkuz/flarum2-tag-favicon-and-file:"*@dev" -W</code></pre>
+  <ol start="4">
+    <li>Включите расширение и очистите кэш:</li>
+  </ol>
+  <pre><code>php flarum extension:enable vadkuz-flarum2-tag-favicon-and-file
+php flarum cache:clear
+php flarum assets:publish</code></pre>
+
+  <h2>Использование</h2>
+  <p>Откройте тег в админке и заполните одно из полей:</p>
+  <ul>
+    <li><code>Иконка</code> (Font Awesome класс)</li>
+    <li><code>Favicon (URL или домен)</code></li>
+    <li><code>Загрузить файл</code></li>
+  </ul>
+
+  <h2>Удаление</h2>
+  <pre><code>composer remove vadkuz/flarum2-tag-favicon-and-file
+php flarum cache:clear
+php flarum assets:publish</code></pre>
+</body>
+</html>
