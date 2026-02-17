@@ -1,7 +1,11 @@
 vadkuz-flarum2-tag-favicon-and-file:
   admin:
     edit_tag:
-      icon_libraries_help: 'In the "Icon" field, you can use Font Awesome, Remix Icon (`ri-*`), Material Design Icons (`mdi mdi-*`), Bootstrap Icons (`bi bi-*`), and Iconify (`iconify:mdi:home`). Libraries are loaded on demand only.'
+      # Shown under the "Icon" field in the tag modal.
+      # Link placeholders: <fa>, <remix>, <mdi>, <bi>, <iconify>
+      icon_help: 'In the "Icon" field you can use: <fa>Font Awesome</fa> (`fas fa-bolt`), <remix>Remix Icon</remix> (`ri-*`), <mdi>Material Design Icons</mdi> (`mdi mdi-*`), <bi>Bootstrap Icons</bi> (`bi bi-*`), and <iconify>Iconify</iconify> (`iconify:mdi:home`). Libraries are loaded on demand only.'
+      # Backward-compatible key (was shown above the favicon section in older versions).
+      icon_libraries_help: 'In the "Icon" field you can use: <fa>Font Awesome</fa> (`fas fa-bolt`), <remix>Remix Icon</remix> (`ri-*`), <mdi>Material Design Icons</mdi> (`mdi mdi-*`), <bi>Bootstrap Icons</bi> (`bi bi-*`), and <iconify>Iconify</iconify> (`iconify:mdi:home`). Libraries are loaded on demand only.'
       favicon_label: Favicon (URL or domain)
       favicon_help: 'You can enter a direct image URL (.ico/.png/.svg/.webp/.jpg, etc.) or a website domain/URL (for example, whitebird.io or https://whitebird.io).'
       favicon_placeholder: 'whitebird.io or https://example.com/favicon.png'

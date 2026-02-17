@@ -402,10 +402,62 @@
         this.faviconUrl = Stream('');
       }
 
+      // Replace the default "Icon" help text with a combined one that also
+      // documents other supported icon libraries + provides quick pick links.
+      try {
+        if (items && typeof items.add === 'function') {
+          items.add(
+            'icon',
+            m('div', { className: 'Form-group' }, [
+              m('label', app.translator.trans('flarum-tags.admin.edit_tag.icon_label')),
+              m(
+                'div',
+                { className: 'helpText' },
+                app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.icon_help', {
+                  fa: m('a', {
+                    href: 'https://fontawesome.com/v6/icons?o=r&m=free',
+                    tabindex: '-1',
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }),
+                  remix: m('a', {
+                    href: 'https://remixicon.com/',
+                    tabindex: '-1',
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }),
+                  mdi: m('a', {
+                    href: 'https://pictogrammers.com/library/mdi/',
+                    tabindex: '-1',
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }),
+                  bi: m('a', {
+                    href: 'https://icons.getbootstrap.com/',
+                    tabindex: '-1',
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }),
+                  iconify: m('a', {
+                    href: 'https://icon-sets.iconify.design/',
+                    tabindex: '-1',
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  }),
+                })
+              ),
+              m('input', { className: 'FormControl', placeholder: 'fas fa-bolt', bidi: this.icon }),
+            ]),
+            10
+          );
+        }
+      } catch (_e) {
+        // This must never break the tag modal.
+      }
+
       items.add(
         'faviconUrl',
         m('div', { className: 'Form-group' }, [
-          m('div', { className: 'helpText', style: { marginBottom: '8px' } }, app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.icon_libraries_help')),
           m('label', app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.favicon_label')),
           m('div', { className: 'helpText' }, app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.favicon_help')),
           m('input', {
