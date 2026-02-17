@@ -29,8 +29,6 @@ php flarum cache:clear
 php flarum assets:publish
 ```
 
-Для установки через Packagist GitHub-токен не требуется.
-
 ## Использование
 
 Откройте тег в админке и заполните одно из полей:
