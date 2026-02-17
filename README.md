@@ -31,34 +31,6 @@ php flarum assets:publish
 
 Для установки через Packagist GitHub-токен не требуется.
 
-## GitHub токен (для разработчика пакета)
-
-Если вы поддерживаете пакет и делаете `git push` в GitHub, токен можно хранить постоянно
-в системном менеджере учетных данных (например, `osxkeychain`) и не удалять после каждого push.
-
-## Установка (для локальной разработки, path repository)
-
-1. Скопируйте папку расширения в `extensions/flarum2-tag-favicon-and-file`.
-2. В корне Flarum добавьте path-репозиторий:
-
-```bash
-composer config repositories.flarum2-tag-favicon-and-file '{"type":"path","url":"extensions/flarum2-tag-favicon-and-file","options":{"symlink":true}}'
-```
-
-3. Установите пакет из локальной папки:
-
-```bash
-composer require vadkuz/flarum2-tag-favicon-and-file:"*@dev" -W
-```
-
-4. Включите расширение и очистите кэш:
-
-```bash
-php flarum extension:enable vadkuz-flarum2-tag-favicon-and-file
-php flarum cache:clear
-php flarum assets:publish
-```
-
 ## Использование
 
 Откройте тег в админке и заполните одно из полей:
