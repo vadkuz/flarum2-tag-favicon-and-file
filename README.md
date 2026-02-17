@@ -29,6 +29,13 @@ php flarum cache:clear
 php flarum assets:publish
 ```
 
+Для установки через Packagist GitHub-токен не требуется.
+
+## GitHub токен (для разработчика пакета)
+
+Если вы поддерживаете пакет и делаете `git push` в GitHub, токен можно хранить постоянно
+в системном менеджере учетных данных (например, `osxkeychain`) и не удалять после каждого push.
+
 ## Установка (для локальной разработки, path repository)
 
 1. Скопируйте папку расширения в `extensions/flarum2-tag-favicon-and-file`.
