@@ -307,12 +307,20 @@
       return PREFIX + SITE_PREFIX + host;
     }
 
-    return PREFIX + raw;
+    return '';
   }
 
   function parseFaviconUrl(iconValue) {
-    var value = stripFaviconPrefix(iconValue);
+    var raw = normalizeUrl(iconValue);
+    if (!raw) return '';
+
+    var value = stripFaviconPrefix(raw);
     if (!value) return '';
+
+    var hasPrefix = raw.toLowerCase().indexOf(PREFIX) === 0;
+    if (!hasPrefix && !isLikelyImageUrl(value) && !extractHost(value)) {
+      return '';
+    }
 
     if (value.toLowerCase().indexOf(SITE_PREFIX) === 0) {
       return normalizeUrl(value.slice(SITE_PREFIX.length));
