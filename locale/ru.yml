@@ -1,6 +1,7 @@
 vadkuz-flarum2-tag-favicon-and-file:
   admin:
     edit_tag:
+      icon_libraries_help: 'В поле «Иконка» можно использовать Font Awesome, Remix Icon (`ri-*`), Material Design Icons (`mdi mdi-*`), Bootstrap Icons (`bi bi-*`) и Iconify (`iconify:mdi:home`). Библиотеки подгружаются только при необходимости.'
       favicon_label: Favicon (URL или домен)
       favicon_help: 'Можно указать прямую ссылку на изображение (.ico/.png/.svg/.webp/.jpg и т.д.) или домен/URL сайта (например, whitebird.io или https://whitebird.io).'
       favicon_placeholder: 'whitebird.io или https://example.com/favicon.png'

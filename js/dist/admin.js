@@ -14,9 +14,19 @@
 
   var PREFIX = 'favicon:';
   var SITE_PREFIX = 'site:';
+  var ICONIFY_PREFIX = 'iconify:';
+  var ICONIFY_ICON_RE = /^[a-z0-9]+:[a-z0-9]+(?:-[a-z0-9]+)*$/i;
   var IMAGE_EXTENSIONS = /\.(?:ico|png|svg|jpe?g|webp|avif|gif|bmp)(?:$|[?#])/i;
   var RULES_STYLE_ID = 'tag-favicon-rules';
+  var LIBRARY_STYLE_BY_NAME = {
+    remix: 'https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css',
+    mdi: 'https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css',
+    bootstrap: 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
+  };
+
   var rulesAdded = Object.create(null);
+  var styleLinksRequested = Object.create(null);
+  var librariesByIconCache = Object.create(null);
   var FILE_ACCEPT = '.ico,.png,.svg,.jpg,.jpeg,.webp,.avif,.gif,.bmp,image/*';
 
   function normalizeUrl(url) {
@@ -145,6 +155,24 @@
     return null;
   }
 
+  function parseIconify(iconValue) {
+    var raw = normalizeUrl(iconValue);
+    if (!raw || raw.toLowerCase().indexOf(ICONIFY_PREFIX) !== 0) {
+      return null;
+    }
+
+    var iconName = normalizeUrl(raw.slice(ICONIFY_PREFIX.length)).toLowerCase();
+    if (!ICONIFY_ICON_RE.test(iconName)) {
+      return null;
+    }
+
+    var apiUrl = 'https://api.iconify.design/' + iconName + '.svg';
+    return {
+      key: ICONIFY_PREFIX + iconName,
+      cssValue: 'url("' + escapeCssUrl(apiUrl) + '")',
+    };
+  }
+
   function hashString(input) {
     var str = String(input || '');
     var hash = 5381;
@@ -190,6 +218,76 @@
 
     rulesAdded[className] = true;
     return className;
+  }
+
+  function splitClassNames(value) {
+    var raw = normalizeUrl(value);
+    if (!raw) return [];
+
+    return raw.split(/\s+/).filter(Boolean);
+  }
+
+  function detectLibrariesForIcon(iconValue) {
+    var icon = normalizeUrl(iconValue);
+    if (!icon) return [];
+    if (librariesByIconCache[icon]) return librariesByIconCache[icon];
+
+    var tokens = splitClassNames(icon);
+    var libs = [];
+
+    var hasRemix = tokens.some(function (token) {
+      return /^ri-[a-z0-9-]+$/i.test(token);
+    });
+    if (hasRemix) libs.push('remix');
+
+    var hasMdi = tokens.some(function (token) {
+      return token === 'mdi' || /^mdi-[a-z0-9-]+$/i.test(token);
+    });
+    if (hasMdi) libs.push('mdi');
+
+    var hasBootstrap = tokens.some(function (token) {
+      return token === 'bi' || /^bi-[a-z0-9-]+$/i.test(token);
+    });
+    if (hasBootstrap) libs.push('bootstrap');
+
+    librariesByIconCache[icon] = libs;
+    return libs;
+  }
+
+  function hasStylesheet(href) {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+    for (var i = 0; i < links.length; i++) {
+      if (normalizeUrl(links[i].href) === href) return true;
+    }
+
+    return false;
+  }
+
+  function ensureLibraryStylesheet(url) {
+    var href = normalizeUrl(url);
+    if (!href || styleLinksRequested[href]) return;
+
+    styleLinksRequested[href] = true;
+    if (hasStylesheet(href)) return;
+
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.setAttribute('data-tag-favicon-lib', href);
+
+    link.onload = function () {
+      if (typeof m !== 'undefined' && m.redraw) {
+        m.redraw();
+      }
+    };
+
+    document.head.appendChild(link);
+  }
+
+  function ensureIconLibraries(iconValue) {
+    detectLibrariesForIcon(iconValue).forEach(function (library) {
+      ensureLibraryStylesheet(LIBRARY_STYLE_BY_NAME[library] || '');
+    });
   }
 
   function normalizeFaviconInput(value) {
@@ -266,10 +364,15 @@
     ext.override(Tag.prototype, 'icon', function (original) {
       var iconValue = original.call(this);
       var favicon = parseFaviconForIcon(iconValue);
+      var iconify = parseIconify(iconValue);
 
-      if (!favicon) return iconValue;
+      if (!favicon && !iconify) {
+        ensureIconLibraries(iconValue);
+        return iconValue;
+      }
 
-      var dynamicClass = ensureRule(favicon.key, favicon.cssValue);
+      var resolved = favicon || iconify;
+      var dynamicClass = ensureRule(resolved.key, resolved.cssValue);
       return dynamicClass ? 'tag-favicon-icon ' + dynamicClass : 'tag-favicon-icon';
     });
 
@@ -294,6 +397,7 @@
       items.add(
         'faviconUrl',
         m('div', { className: 'Form-group' }, [
+          m('div', { className: 'helpText', style: { marginBottom: '8px' } }, app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.icon_libraries_help')),
           m('label', app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.favicon_label')),
           m('div', { className: 'helpText' }, app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.favicon_help')),
           m('input', {
