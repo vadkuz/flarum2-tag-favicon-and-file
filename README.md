@@ -20,16 +20,25 @@
 - Единый размер отображения иконки для всех вариантов
 - Приоритет: загруженный файл -> favicon URL/домен -> Font Awesome
 
-## Установка (локально через path repository)
+## Установка (рекомендуется, через Packagist)
+
+```bash
+composer require vadkuz/flarum2-tag-favicon-and-file
+php flarum extension:enable vadkuz-flarum2-tag-favicon-and-file
+php flarum cache:clear
+php flarum assets:publish
+```
+
+## Установка (для локальной разработки, path repository)
 
 1. Скопируйте папку расширения в `extensions/flarum2-tag-favicon-and-file`.
-2. В корне Flarum выполните команду (она сама добавит path-репозиторий в `composer.json`):
+2. В корне Flarum добавьте path-репозиторий:
 
 ```bash
 composer config repositories.flarum2-tag-favicon-and-file '{"type":"path","url":"extensions/flarum2-tag-favicon-and-file","options":{"symlink":true}}'
 ```
 
-3. Установите пакет:
+3. Установите пакет из локальной папки:
 
 ```bash
 composer require vadkuz/flarum2-tag-favicon-and-file:"*@dev" -W
