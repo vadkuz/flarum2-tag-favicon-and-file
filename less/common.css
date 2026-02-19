@@ -14,8 +14,3 @@
 .tag-favicon-icon::before {
   content: '' !important;
 }
-
-.TagLabel-icon.tag-favicon-icon,
-.Button-icon.tag-favicon-icon {
-  margin-right: 0.35em;
-}
