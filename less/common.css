@@ -14,3 +14,14 @@
 .tag-favicon-icon::before {
   content: '' !important;
 }
+
+/* In stacked icons (FoF Categories), center favicon inside the circle layer. */
+.fa-stack > .tag-favicon-icon.fa-stack-1x {
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
