@@ -29,6 +29,31 @@
     return String(url || '').trim();
   }
 
+  function getApiBaseUrl() {
+    try {
+      if (typeof app !== 'undefined' && app && app.forum && typeof app.forum.attribute === 'function') {
+        var apiUrl = normalizeUrl(app.forum.attribute('apiUrl'));
+        if (apiUrl) {
+          return apiUrl.replace(/\/+$/, '');
+        }
+      }
+    } catch (_e) {}
+
+    return '/api';
+  }
+
+  function buildCacheProxyUrl(params) {
+    var query = [];
+    if (params && params.url) {
+      query.push('url=' + encodeURIComponent(params.url));
+    }
+    if (params && params.site) {
+      query.push('site=' + encodeURIComponent(params.site));
+    }
+
+    return getApiBaseUrl() + '/tag-favicon/cache' + (query.length ? '?' + query.join('&') : '');
+  }
+
   function stripFaviconPrefix(value) {
     var raw = normalizeUrl(value);
     if (raw.toLowerCase().indexOf(PREFIX) === 0) {
@@ -95,20 +120,7 @@
     var safeHost = extractHost(host);
     if (!safeHost) return '';
 
-    var encodedHost = encodeURIComponent(safeHost);
-    var urls = [
-      'https://www.google.com/s2/favicons?domain=' + encodedHost + '&sz=64',
-      'https://' + safeHost + '/favicon.ico',
-      'https://' + safeHost + '/favicon.png',
-      'https://' + safeHost + '/favicon.svg',
-      'https://' + safeHost + '/apple-touch-icon.png',
-    ];
-
-    return urls
-      .map(function (url) {
-        return 'url("' + escapeCssUrl(url) + '")';
-      })
-      .join(',');
+    return 'url("' + escapeCssUrl(buildCacheProxyUrl({ site: safeHost })) + '")';
   }
 
   function parseFavicon(iconValue) {
@@ -116,9 +128,31 @@
     if (!value) return null;
 
     if (isLikelyImageUrl(value)) {
+      if (/^data:image\//i.test(value)) {
+        return {
+          key: 'url:' + value,
+          cssValue: 'url("' + escapeCssUrl(value) + '")',
+        };
+      }
+
+      if (/^\//.test(value) && !/^\/\//.test(value)) {
+        return {
+          key: 'url:' + value,
+          cssValue: 'url("' + escapeCssUrl(value) + '")',
+        };
+      }
+
+      var parsed = parseAbsoluteUrl(value);
+      if (parsed && parsed.origin === window.location.origin) {
+        return {
+          key: 'url:' + value,
+          cssValue: 'url("' + escapeCssUrl(value) + '")',
+        };
+      }
+
       return {
         key: 'url:' + value,
-        cssValue: 'url("' + escapeCssUrl(value) + '")',
+        cssValue: 'url("' + escapeCssUrl(buildCacheProxyUrl({ url: value })) + '")',
       };
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use Flarum\Extend;
+use Vadkuz\TagFavicon\Api\Controller\CacheController;
 use Vadkuz\TagFavicon\Api\Controller\UploadController;
 
 return [
@@ -13,6 +14,7 @@ return [
         ->css(__DIR__.'/less/common.css'),
 
     (new Extend\Routes('api'))
+        ->get('/tag-favicon/cache', 'vadkuz.tag-favicon.cache', CacheController::class)
         ->post('/tag-favicon/upload', 'vadkuz.tag-favicon.upload', UploadController::class),
 
     new Extend\Locales(__DIR__.'/locale'),

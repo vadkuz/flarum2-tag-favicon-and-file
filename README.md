@@ -25,6 +25,7 @@ Also supports additional icon libraries in the `Icon` field:
 
 - Автоопределение favicon по домену: `whitebird.io` или `https://whitebird.io`
 - Поддержка URL изображений: `.ico .png .svg .jpg .jpeg .webp .avif .gif .bmp`
+- Внешние favicon URL/домены проксируются через серверный кэш и оптимизацию
 - Загрузка собственного файла иконки из админки
 - Автооптимизация загруженных растровых файлов (ресайз до 128px и сжатие)
 - Поддержка Remix Icon, Material Design Icons, Bootstrap Icons и Iconify в поле `Иконка`
@@ -64,6 +65,7 @@ php flarum assets:publish
 
 - Automatic favicon detection by domain: `whitebird.io` or `https://whitebird.io`
 - Supported image URL formats: `.ico .png .svg .jpg .jpeg .webp .avif .gif .bmp`
+- External favicon URL/domain is proxied through server-side cache and optimization
 - Upload custom icon file from admin panel
 - Automatic optimization for uploaded raster files (resize to 128px and compression)
 - Supports Remix Icon, Material Design Icons, Bootstrap Icons, and Iconify in the `Icon` field

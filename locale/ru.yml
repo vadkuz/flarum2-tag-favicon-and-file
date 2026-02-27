@@ -7,7 +7,7 @@ vadkuz-flarum2-tag-favicon-and-file:
       # Backward-compatible key (was shown above the favicon section in older versions).
       icon_libraries_help: 'В поле «Иконка» можно использовать: <fa>Font Awesome</fa> (`fas fa-bolt`), <remix>Remix Icon</remix> (`ri-*`), <mdi>Material Design Icons</mdi> (`mdi mdi-*`), <bi>Bootstrap Icons</bi> (`bi bi-*`) и <iconify>Iconify</iconify> (`iconify:mdi:home`). Библиотеки подгружаются только при необходимости.'
       favicon_label: Favicon (URL или домен)
-      favicon_help: 'Можно указать прямую ссылку на изображение (.ico/.png/.svg/.webp/.jpg и т.д.) или домен/URL сайта (например, whitebird.io или https://whitebird.io).'
+      favicon_help: 'Можно указать прямую ссылку на изображение (.ico/.png/.svg/.webp/.jpg и т.д.) или домен/URL сайта (например, whitebird.io или https://whitebird.io). Внешние favicon кэшируются и оптимизируются через сервер.'
       favicon_placeholder: 'whitebird.io или https://example.com/favicon.png'
       upload_label: Загрузить файл иконки
       upload_help: 'Поддерживаются .ico, .png, .svg, .jpg, .jpeg, .webp, .avif, .gif, .bmp (до 2 МБ). Растровые файлы автоматически оптимизируются на сервере (ресайз + сжатие), а размер иконки в интерфейсе остаётся стандартным.'
