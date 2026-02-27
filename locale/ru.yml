@@ -10,6 +10,6 @@ vadkuz-flarum2-tag-favicon-and-file:
       favicon_help: 'Можно указать прямую ссылку на изображение (.ico/.png/.svg/.webp/.jpg и т.д.) или домен/URL сайта (например, whitebird.io или https://whitebird.io).'
       favicon_placeholder: 'whitebird.io или https://example.com/favicon.png'
       upload_label: Загрузить файл иконки
-      upload_help: 'Поддерживаются .ico, .png, .svg, .jpg, .jpeg, .webp, .avif, .gif, .bmp (до 2 МБ). Файл загрузится на сервер, а размер иконки останется стандартным.'
+      upload_help: 'Поддерживаются .ico, .png, .svg, .jpg, .jpeg, .webp, .avif, .gif, .bmp (до 2 МБ). Растровые файлы автоматически оптимизируются на сервере (ресайз + сжатие), а размер иконки в интерфейсе остаётся стандартным.'
       uploading: Загрузка файла...
       upload_error_default: Не удалось загрузить файл. Проверьте формат и попробуйте снова.
