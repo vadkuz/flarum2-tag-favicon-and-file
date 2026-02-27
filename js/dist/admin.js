@@ -54,6 +54,9 @@
     if (params && params.site) {
       query.push('site=' + encodeURIComponent(params.site));
     }
+    if (params && params.refresh) {
+      query.push('refresh=' + encodeURIComponent(String(params.refresh)));
+    }
 
     return getApiBaseUrl() + '/tag-favicon/cache' + (query.length ? '?' + query.join('&') : '');
   }
@@ -363,6 +366,66 @@
     return value;
   }
 
+  function buildCacheRefreshParams(inputValue) {
+    var value = stripFaviconPrefix(inputValue);
+    if (!value) return null;
+
+    if (value.toLowerCase().indexOf(SITE_PREFIX) === 0) {
+      var siteHost = extractHost(value.slice(SITE_PREFIX.length));
+      return siteHost ? { site: siteHost } : null;
+    }
+
+    if (isLikelyImageUrl(value)) {
+      if (/^data:image\//i.test(value)) {
+        return null;
+      }
+
+      if (/^\//.test(value) && !/^\/\//.test(value)) {
+        return null;
+      }
+
+      var parsedUrl = parseAbsoluteUrl(value);
+      if (!parsedUrl) {
+        return null;
+      }
+
+      if (parsedUrl.origin === window.location.origin) {
+        return null;
+      }
+
+      return { url: value };
+    }
+
+    var host = extractHost(value);
+    return host ? { site: host } : null;
+  }
+
+  async function refreshFaviconCache(inputValue) {
+    var params = buildCacheRefreshParams(inputValue);
+    if (!params) {
+      throw new Error(app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.refresh_invalid_input'));
+    }
+
+    var response = await fetch(buildCacheProxyUrl(Object.assign({}, params, { refresh: 1 })), {
+      method: 'GET',
+      credentials: 'same-origin',
+    });
+
+    if (!response.ok) {
+      var payload = null;
+      try {
+        payload = await response.json();
+      } catch (_e) {
+        payload = null;
+      }
+
+      var message = payload && payload.error ? payload.error : null;
+      throw new Error(message || app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.refresh_error_default'));
+    }
+
+    await response.arrayBuffer();
+  }
+
   async function uploadFaviconFile(file) {
     var apiUrl = app.forum.attribute('apiUrl');
     var formData = new FormData();
@@ -425,6 +488,9 @@
       this.faviconUrl = Stream(faviconUrl);
       this.faviconUploadLoading = Stream(false);
       this.faviconUploadError = Stream('');
+      this.faviconRefreshLoading = Stream(false);
+      this.faviconRefreshError = Stream('');
+      this.faviconRefreshSuccess = Stream('');
 
       if (faviconUrl && typeof this.icon === 'function') {
         this.icon('');
@@ -498,8 +564,70 @@
             className: 'FormControl',
             placeholder: app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.favicon_placeholder'),
             value: this.faviconUrl(),
-            oninput: (e) => this.faviconUrl(e.target.value),
+            oninput: (e) => {
+              this.faviconUrl(e.target.value);
+              if (this.faviconRefreshError) {
+                this.faviconRefreshError('');
+              }
+              if (this.faviconRefreshSuccess) {
+                this.faviconRefreshSuccess('');
+              }
+            },
           }),
+          m('div', { style: { marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } }, [
+            m(
+              'button',
+              {
+                type: 'button',
+                className: 'Button Button--small',
+                disabled: this.faviconRefreshLoading(),
+                onclick: async () => {
+                  this.faviconRefreshLoading(true);
+                  this.faviconRefreshError('');
+                  this.faviconRefreshSuccess('');
+
+                  if (typeof m !== 'undefined' && m.redraw) {
+                    m.redraw();
+                  }
+
+                  try {
+                    await refreshFaviconCache(this.faviconUrl ? this.faviconUrl() : '');
+                    this.faviconRefreshSuccess(app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.refresh_success'));
+
+                    if (typeof this.icon === 'function') {
+                      this.icon(normalizeFaviconInput(this.faviconUrl ? this.faviconUrl() : ''));
+                    }
+
+                    if (this.tag && typeof this.tag.pushData === 'function') {
+                      this.tag.pushData({
+                        attributes: {
+                          icon: normalizeFaviconInput(this.faviconUrl ? this.faviconUrl() : ''),
+                        },
+                      });
+                    }
+                  } catch (error) {
+                    var refreshMessage = error && error.message ? error.message : app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.refresh_error_default');
+                    this.faviconRefreshError(refreshMessage);
+                  } finally {
+                    this.faviconRefreshLoading(false);
+
+                    if (typeof m !== 'undefined' && m.redraw) {
+                      m.redraw();
+                    }
+                  }
+                },
+              },
+              this.faviconRefreshLoading()
+                ? app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.refreshing')
+                : app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.refresh_button')
+            ),
+            this.faviconRefreshSuccess()
+              ? m('span', { className: 'helpText', style: { color: '#2f7d32', margin: 0 } }, this.faviconRefreshSuccess())
+              : null,
+          ]),
+          this.faviconRefreshError()
+            ? m('div', { className: 'helpText', style: { color: '#b72f2f' } }, this.faviconRefreshError())
+            : null,
           m('label', { style: { marginTop: '12px', display: 'block' } }, app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.upload_label')),
           m('div', { className: 'helpText' }, app.translator.trans('vadkuz-flarum2-tag-favicon-and-file.admin.edit_tag.upload_help')),
           m('input', {

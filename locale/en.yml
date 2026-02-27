@@ -7,9 +7,14 @@ vadkuz-flarum2-tag-favicon-and-file:
       # Backward-compatible key (was shown above the favicon section in older versions).
       icon_libraries_help: 'In the "Icon" field you can use: <fa>Font Awesome</fa> (`fas fa-bolt`), <remix>Remix Icon</remix> (`ri-*`), <mdi>Material Design Icons</mdi> (`mdi mdi-*`), <bi>Bootstrap Icons</bi> (`bi bi-*`), and <iconify>Iconify</iconify> (`iconify:mdi:home`). Libraries are loaded on demand only.'
       favicon_label: Favicon (URL or domain)
-      favicon_help: 'You can enter a direct image URL (.ico/.png/.svg/.webp/.jpg, etc.) or a website domain/URL (for example, whitebird.io or https://whitebird.io). External favicons are cached and optimized via your server.'
-      favicon_placeholder: 'whitebird.io or https://example.com/favicon.png'
+      favicon_help: 'You can enter a direct image URL (.ico/.png/.svg/.webp/.jpg, etc.) or a website domain/URL (for example, flarum.org or https://flarum.org). External favicons are cached and optimized via your server.'
+      favicon_placeholder: 'flarum.org or https://example.com/favicon.png'
       upload_label: Upload icon file
       upload_help: 'Supported formats: .ico, .png, .svg, .jpg, .jpeg, .webp, .avif, .gif, .bmp (up to 2 MB). Raster files are automatically optimized on the server (resize + compression), and icon size in UI stays standard.'
       uploading: Uploading file...
       upload_error_default: Could not upload the file. Please check the format and try again.
+      refresh_button: Refresh favicon cache
+      refreshing: Refreshing cache...
+      refresh_success: Favicon cache refreshed.
+      refresh_invalid_input: To refresh cache, enter an external image URL or a website domain.
+      refresh_error_default: Could not refresh favicon cache.

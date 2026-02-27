@@ -3,6 +3,7 @@
 namespace Vadkuz\TagFavicon\Api\Controller;
 
 use Flarum\Foundation\Paths;
+use Flarum\Http\RequestUtil;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Stream;
@@ -15,7 +16,6 @@ use Vadkuz\TagFavicon\Support\ImageOptimizer;
 class CacheController implements RequestHandlerInterface
 {
     private const CACHE_TTL_SECONDS = 604800;
-    private const CLIENT_CACHE_SECONDS = 86400;
     private const MAX_REMOTE_BYTES = 4194304;
     private const MAX_REDIRECTS = 5;
     private const CONNECT_TIMEOUT_SECONDS = 4;
@@ -46,6 +46,7 @@ class CacheController implements RequestHandlerInterface
         $query = $request->getQueryParams();
         $rawUrl = $this->normalizeInput($query['url'] ?? null);
         $rawSite = $this->normalizeInput($query['site'] ?? null);
+        $forceRefresh = $this->toBool($query['refresh'] ?? null);
 
         if ($rawUrl === '' && $rawSite === '') {
             return new JsonResponse(['error' => 'Missing "url" or "site" query parameter.'], 400);
@@ -53,6 +54,11 @@ class CacheController implements RequestHandlerInterface
 
         if ($rawUrl !== '' && $rawSite !== '') {
             return new JsonResponse(['error' => 'Use either "url" or "site", not both.'], 400);
+        }
+
+        if ($forceRefresh) {
+            $actor = RequestUtil::getActor($request);
+            $actor->assertAdmin();
         }
 
         $sourceKey = '';
@@ -80,7 +86,7 @@ class CacheController implements RequestHandlerInterface
         $cacheDir = $this->ensureCacheDir();
         $cacheEntry = $this->loadCacheEntry($cacheDir, $cacheKey);
 
-        if ($cacheEntry !== null && ! $this->isEntryExpired($cacheEntry['fetchedAt'])) {
+        if (! $forceRefresh && $cacheEntry !== null && ! $this->isEntryExpired($cacheEntry['fetchedAt'])) {
             return $this->serveCachedFile($cacheEntry['path'], $cacheEntry['mime']);
         }
 
@@ -577,6 +583,25 @@ class CacheController implements RequestHandlerInterface
         return is_string($value) ? trim($value) : '';
     }
 
+    private function toBool(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_int($value)) {
+            return $value === 1;
+        }
+
+        if (is_string($value)) {
+            $normalized = strtolower(trim($value));
+
+            return in_array($normalized, ['1', 'true', 'yes', 'on'], true);
+        }
+
+        return false;
+    }
+
     private function serveCachedFile(string $path, string $mime): ResponseInterface
     {
         if (! is_file($path)) {
@@ -586,7 +611,8 @@ class CacheController implements RequestHandlerInterface
         $stream = new Stream($path, 'r');
         $headers = [
             'Content-Type' => $mime,
-            'Cache-Control' => 'public, max-age='.self::CLIENT_CACHE_SECONDS.', stale-while-revalidate='.self::CACHE_TTL_SECONDS,
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
             'X-Tag-Favicon-Cache' => 'HIT',
         ];
 
